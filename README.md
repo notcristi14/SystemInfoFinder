@@ -43,7 +43,7 @@ A new file named my_pc_specs.txt will be created in the same directory, containi
 --------------------------------------------------------------------------------------------------------------
 
 ### 📄 Example Output Structure
-The output file uses clear headings for easy readability. You will find specific details, like your SATA SSD model, listed under the ### [ STORAGE ] section, and your motherboard model under ### [ MOTHERBOARD ].
+The output file uses clear headings for easy readability. You will find specific details, like your SATA SSD model, listed under the [ STORAGE ] section, and your motherboard model under [ MOTHERBOARD ].
 ```
 PC COMPONENT REPORT
 Generated on: [Date/Time]
