@@ -71,8 +71,8 @@ Model        : [Network Adapter Model]
 Type         : Wired
 ...
 
-[ STORAGE ]
-Drive #1     : WDC WDS500G2B0B-00YS70
-Type         : SSD SATA
-Size         : 465.76 GB
+​[ STORAGE ]
+Drive #1     : Samsung 990 PRO 1TB
+Type         : M.2 NVMe PCIe 4.0
+Size         : 931.51 GB
 ...
