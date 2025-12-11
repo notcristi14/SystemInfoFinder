@@ -1,4 +1,4 @@
-# 💻 PC Component Reporter (Node.js)
+# 💻 System Info Finder (Node.js)
 
 A simple, zero-configuration Node.js script designed to export comprehensive information about your computer's hardware and operating system into a single, easy-to-read text file.
 
