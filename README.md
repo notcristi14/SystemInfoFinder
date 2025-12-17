@@ -1,78 +1,109 @@
-# 💻 System Info Finder (Node.js)
+# 🔎 SystemInfoFinder
 
-A simple, zero-configuration Node.js script designed to export comprehensive information about your computer's hardware and operating system into a single, easy-to-read text file.
+**SystemInfoFinder** is a powerful, zero-configuration Node.js utility designed to generate a "Deep Dive" diagnostic report of your computer's hardware and software environment.
 
-This tool uses the powerful `systeminformation` library to gather details that are often difficult to find in one place, such as specific motherboard models, SSD part numbers, and network device names.
+Unlike basic system checks, this tool utilizes the `systeminformation` library to extract granular details—from individual RAM stick timings and BIOS versions to connected USB peripherals and audio drivers—exporting everything into a clean, categorized text file.
 
----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-----------------------------------
 
 ## ✨ Features
 
-* **Comprehensive Data:** Exports details for the following components:
-    * **System/OS:** Operating System, Hostname, Manufacturer.
-    * **Motherboard:** Model, Manufacturer, Version.
-    * **CPU:** Brand, Speed, Cores, Socket.
-    * **Memory (RAM):** Total Size.
-    * **Graphics (GPU):** Model, VRAM, Driver.
-    * **Network:** Interface Name, Model, MAC Address, Speed.
-    * **Storage:** Drive Name, Type (SSD/HDD), Size, Interface.
-* **Clean Output:** Formats the data into a structured `.txt` file, converting raw bytes into readable GB and listing components clearly.
-* **Easy to Run:** Requires only Node.js and one simple command to execute.
+Generates a `full_pc_report.txt` containing detailed metrics across **14+ categories**:
 
-------------------------------------------------------------------------------------------------------------------------------------------
+* **🖥️ System & Chassis:** Manufacturer, Model, Serial Numbers, Chassis Type.
+* **⚙️ BIOS/Firmware:** Vendor, Version, Release Date.
+* **🧠 CPU:** Socket type, Cache sizes (L1/L2/L3), Governor, Virtualization support.
+* **💾 Memory (RAM):** Total vs. Available, plus **individual stick details** (Clock Speed, Voltage, Manufacturer).
+* **🎮 Graphics:** GPU VRAM, Driver versions, and **Monitor** refresh rates/resolutions.
+* **🔌 Peripherals:** Connected **USB devices** (Mice, Keyboards) and **Audio** inputs/outputs.
+* **🖧 Network:** Active Interfaces, MAC Addresses, IP, and Link Speeds.
+* **📂 Storage:** Physical Disk specs (Model, Firmware) and Logical Volume usage (C: drive usage %).
+
+-----------------------------------
 
 ## 🚀 Setup & Installation
-Before running the script, ensure you have **Node.js** installed on your system.
 
-### 1. Initialize Project
-Open your terminal or command prompt and run the following commands in the folder where you want to keep the script:
+Ensure you have **Node.js** installed on your machine.
 
-# Install the required library
+Open your terminal or command prompt in your project folder and run:
+
+# Install the systeminformation library
 `npm install systeminformation`
 
-# Run the script directly from your terminal:
-`node index.js`
+---------------------------------------
 
-### Output
-The script will gather the information (which may take a moment) and then output a confirmation message:
+## ⚠️ Note: The scan may take 5-10 seconds to complete as it queries detailed hardware controllers.
 
-`Success! Report saved to: my_pc_specs.txt
-Open the file to see your Network Devices and other specs.`
+---------------------------------------
 
-A new file named my_pc_specs.txt will be created in the same directory, containing your full component report.
---------------------------------------------------------------------------------------------------------------
+​## 2. View Report
 
-### 📄 Example Output Structure
-The output file uses clear headings for easy readability. You will find specific details, like your SATA SSD model, listed under the [ STORAGE ] section, and your motherboard model under [ MOTHERBOARD ].
-```
-PC COMPONENT REPORT
-Generated on: [Date/Time]
-==========================================
+A file named `full_pc_report.txt` will be generated in the same directory.
 
-[ SYSTEM ]
-Manufacturer : [System Manufacturer]
-Model        : [System Model]
+​# 📄 Example Output Structure
+
+FULL SYSTEM DIAGNOSTIC REPORT
+Generated on: 12/17/2025, 10:45:00 AM
+Uptime      : 4.50 Hours
+============================================================
+[ SYSTEM HARDWARE ]
+============================================================
+Manufacturer : Dell Inc.
+Model        : XPS 8940
+Serial Num   : 8J9K...
 ...
 
-[ MOTHERBOARD ]
-Manufacturer : [Motherboard Manufacturer]
-Model        : [Motherboard Model Number]
-Version      : [Version]
+============================================================
+[ BIOS / FIRMWARE ]
+============================================================
+Vendor       : Dell Inc.
+Version      : 2.13.0
+Release Date : 2023-11-15
 ...
 
-[ CPU ]
-Brand        : [CPU Brand and Model]
-Speed        : [Speed] GHz (Base)
+============================================================
+[ MEMORY (RAM) SUMMARY ]
+============================================================
+Total Size   : 31.70 GB
+Available    : 16.40 GB
+
+--- PHYSICAL MEMORY STICKS (DIMMS) ---
+[Stick #1]
+  Size       : 16.00 GB
+  Type       : DDR4
+  Clock Speed: 3200 MHz
+  Manuf      : Samsung
 ...
 
-[ NETWORK ]
-Interface    : [e.g., Ethernet or Wi-Fi]
-Model        : [Network Adapter Model]
-Type         : Wired
+============================================================
+[ GRAPHICS CONTROLLERS (GPU) ]
+============================================================
+[GPU #1]
+  Model      : NVIDIA GeForce RTX 3070
+  VRAM       : 8.00 GB
+  Driver     : 536.23
 ...
 
-​[ STORAGE ]
-Drive #1     : Samsung 990 PRO 1TB
-Type         : M.2 NVMe PCIe 4.0
-Size         : 931.51 GB
+--- DISPLAYS (MONITORS) ---
+[Display #1]
+  Model      : LG UltraGear
+  Resolution : 2560 x 1440
+  Refresh    : 144 Hz
+...
+
+============================================================
+[ PHYSICAL STORAGE (DISKS) ]
+============================================================
+[Disk #1] -> Samsung 990 PRO 1TB
+  Type       : SSD (NVMe)
+  Size       : 931.51 GB
+  Firmware   : 2B2QEXM7
+...
+
+============================================================
+[ USB DEVICES ]
+============================================================
+[USB #1]
+  Name       : Razer DeathAdder V2
+  Type       : HID
 ...
