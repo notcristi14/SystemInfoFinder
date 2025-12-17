@@ -1,4 +1,4 @@
-# 🔎 SystemInfoFinder
+#🔎 SystemInfoFinder
 
 **SystemInfoFinder** is a powerful, zero-configuration Node.js utility designed to generate a "Deep Dive" diagnostic report of your computer's hardware and software environment.
 
