@@ -36,11 +36,12 @@ Open your terminal or command prompt in your project folder and run:
 
 ---------------------------------------
 
-​### 2. View Report
+# 2. View Report
 
 A file named `full_pc_report.txt` will be generated in the same directory.
 
-​### 📄 Example Output Structure
+
+# 📄 Example Output Structure
 
 FULL SYSTEM DIAGNOSTIC REPORT
 Generated on: 12/17/2025, 10:45:00 AM
