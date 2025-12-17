@@ -1,8 +1,8 @@
 # 🔎 SystemInfoFinder
 
-**SystemInfoFinder** is a powerful, zero-configuration Node.js utility designed to generate a "Deep Dive" diagnostic report of your computer's hardware and software environment.
+**SystemInfoFinder** is a powerful, zero-configuration `Node.js` utility designed to generate a **Deep Dive** diagnostic report of your computer's hardware and software environment.
 
-Unlike basic system checks, this tool utilizes the `systeminformation` library to extract granular details—from individual RAM stick timings and BIOS versions to connected USB peripherals and audio drivers—exporting everything into a clean, categorized text file.
+Unlike basic system checks, this tool utilizes the `systeminformation` library to extract granular details—from individual **RAM** stick timings and **BIOS** versions to connected **USB** peripherals and audio drivers—exporting everything into a clean, categorized text file.
 
 -----------------------------------
 
