@@ -18,7 +18,7 @@ Generates a `full_pc_report.txt` containing detailed metrics across **14+ catego
 * **🔌 Peripherals:** Connected **USB devices** (Mice, Keyboards) and **Audio** inputs/outputs.
 * **🖧 Network:** Active Interfaces, MAC Addresses, IP, and Link Speeds.
 * **📂 Storage:** Physical Disk specs (Model, Firmware) and Logical Volume usage (C: drive usage %).
-
+* **​⚡ Power:** Battery health, cycle counts (for laptops), and AC power status.
 -----------------------------------
 
 ## 🚀 Setup & Installation
