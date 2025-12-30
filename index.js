@@ -4,9 +4,10 @@ const path = require('path');
 
 // --- HELPER FUNCTIONS ---
 const formatBytes = (bytes) => {
-    if (!bytes) return 'N/A';
+    if (!bytes && bytes !== 0) return 'N/A';
     const k = 1024;
     const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+    if (bytes === 0) return '0 Bytes';
     const i = Math.floor(Math.log(bytes) / Math.log(k));
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
 };
@@ -19,238 +20,259 @@ async function generateDeepDiveReport() {
     console.log("🚀 Starting Deep Dive System Scan...");
 
     try {
-        // Added 'si.battery()' and 'si.powerShell()' for power info
-        const data = await Promise.all([
-            si.time(), si.system(), si.bios(), si.baseboard(), 
-            si.chassis(), si.osInfo(), si.uuid(), si.cpu(), 
-            si.cpuCache(), si.mem(), si.memLayout(), si.graphics(), 
-            si.diskLayout(), si.fsSize(), si.networkInterfaces(), 
-            si.audio(), si.usb(), si.bluetoothDevices(),
-            si.battery() // New: Battery/Power status
+        const [
+            time,               // 0
+            system,             // 1
+            bios,               // 2
+            baseboard,          // 3
+            chassis,            // 4
+            osInfo,             // 5
+            uuid,               // 6
+            cpu,                // 7
+            cpuCache,           // 8
+            mem,                // 9
+            memLayout,          // 10
+            graphics,           // 11
+            diskLayout,         // 12
+            fsSize,             // 13
+            networkInterfaces,  // 14
+            audio,              // 15
+            usb,                // 16
+            bluetoothDevices,   // 17
+            battery             // 18 (battery/power info)
+        ] = await Promise.all([
+            si.time(),
+            si.system(),
+            si.bios(),
+            si.baseboard(),
+            si.chassis(),
+            si.osInfo(),
+            si.uuid(),
+            si.cpu(),
+            si.cpuCache(),
+            si.mem(),
+            si.memLayout(),
+            si.graphics(),
+            si.diskLayout(),
+            si.fsSize(),
+            si.networkInterfaces(),
+            si.audio(),
+            si.usb(),
+            si.bluetoothDevices(),
+            si.battery()
         ]);
 
         let report = `FULL SYSTEM DIAGNOSTIC REPORT\n`;
-        report += `Generated on: ${new Date(data[0].current).toLocaleString()}\n\n`;
-
-        // ... [Previous sections 1-13 remain the same] ...
-        // (I will skip repeating the full code blocks for brevity, but include the new section below)
-
-        // 14. POWER & BATTERY (New Section)
-        const battery = data[18];
-        report += header('POWER & BATTERY');
-        report += `Has Battery     : ${battery.hasBattery ? 'Yes' : 'No'}\n`;
-        if (battery.hasBattery) {
-            report += `Battery Model   : ${print(battery.model)}\n`;
-            report += `Manufacturer    : ${print(battery.manufacturer)}\n`;
-            report += `Type            : ${print(battery.type)}\n`;
-            report += `Capacity        : ${battery.capacityUnit} ${battery.designedCapacity} (Designed) / ${battery.maxCapacity} (Max)\n`;
-            report += `Current Charge  : ${battery.percent}%\n`;
-            report += `Cycle Count     : ${print(battery.cycleCount)}\n`;
-            report += `Health/Wear     : ${100 - battery.voltageConfigured}% Wear Level\n`;
-        } else {
-            report += `Power Source    : AC Adapter (Desktop Mode)\n`;
-            report += `Note            : Standard Desktop PSUs do not report data to the OS unless they are 'Digital' models with a USB link.\n`;
-        }
-
-        // OUTPUT TO FILE
-        const fileName = 'full_pc_report.txt';
-        const filePath = path.join(__dirname, fileName);
-        fs.writeFileSync(filePath, report);
-
-        console.log(`\n✅ DONE! Power specs added to: ${fileName}`);
-
-    } catch (e) {
-        console.error("Error:", e);
-    }
-}
-
-generateDeepDiveReport();
-            si.system(),            // 1
-            si.bios(),              // 2
-            si.baseboard(),         // 3
-            si.chassis(),           // 4
-            si.osInfo(),            // 5
-            si.uuid(),              // 6
-            si.cpu(),               // 7
-            si.cpuCache(),          // 8
-            si.mem(),               // 9
-            si.memLayout(),         // 10
-            si.graphics(),          // 11
-            si.diskLayout(),        // 12
-            si.fsSize(),            // 13
-            si.networkInterfaces(), // 14
-            si.audio(),             // 15
-            si.usb(),               // 16
-            si.bluetoothDevices()   // 17
-        ]);
-
-        let report = `FULL SYSTEM DIAGNOSTIC REPORT\n`;
-        report += `Generated on: ${new Date(data[0].current).toLocaleString()}\n`;
-        report += `Uptime      : ${(data[0].uptime / 3600).toFixed(2)} Hours\n`;
+        report += `Generated on: ${new Date(time.current).toLocaleString()}\n`;
+        report += `Uptime      : ${(time.uptime / 3600).toFixed(2)} Hours\n`;
 
         // 1. SYSTEM HARDWARE
         report += header('SYSTEM HARDWARE');
-        report += `Manufacturer : ${print(data[1].manufacturer)}\n`;
-        report += `Model        : ${print(data[1].model)}\n`;
-        report += `Version      : ${print(data[1].version)}\n`;
-        report += `Serial Num   : ${print(data[1].serial)}\n`;
-        report += `UUID         : ${print(data[6].os)}\n`;
-        report += `SKU          : ${print(data[1].sku)}\n`;
+        report += `Manufacturer : ${print(system.manufacturer)}\n`;
+        report += `Model        : ${print(system.model)}\n`;
+        report += `Version      : ${print(system.version)}\n`;
+        report += `Serial Num   : ${print(system.serial)}\n`;
+        report += `UUID         : ${print(uuid.os)}\n`;
+        report += `SKU          : ${print(system.sku)}\n`;
 
         // 2. BIOS / FIRMWARE
         report += header('BIOS / FIRMWARE');
-        report += `Vendor       : ${print(data[2].vendor)}\n`;
-        report += `Version      : ${print(data[2].version)}\n`;
-        report += `Release Date : ${print(data[2].releaseDate)}\n`;
-        report += `Revision     : ${print(data[2].revision)}\n`;
+        report += `Vendor       : ${print(bios.vendor)}\n`;
+        report += `Version      : ${print(bios.version)}\n`;
+        report += `Release Date : ${print(bios.releaseDate)}\n`;
+        report += `Revision     : ${print(bios.revision)}\n`;
 
         // 3. MOTHERBOARD (BASEBOARD)
         report += header('MOTHERBOARD');
-        report += `Manufacturer : ${print(data[3].manufacturer)}\n`;
-        report += `Model        : ${print(data[3].model)}\n`;
-        report += `Version      : ${print(data[3].version)}\n`;
-        report += `Serial Num   : ${print(data[3].serial)}\n`;
-        report += `Asset Tag    : ${print(data[3].assetTag)}\n`;
+        report += `Manufacturer : ${print(baseboard.manufacturer)}\n`;
+        report += `Model        : ${print(baseboard.model)}\n`;
+        report += `Version      : ${print(baseboard.version)}\n`;
+        report += `Serial Num   : ${print(baseboard.serial)}\n`;
+        report += `Asset Tag    : ${print(baseboard.assetTag)}\n`;
 
         // 4. CHASSIS (CASE)
         report += header('CHASSIS / CASE');
-        report += `Type         : ${print(data[4].type)}\n`;
-        report += `Manufacturer : ${print(data[4].manufacturer)}\n`;
-        report += `Model        : ${print(data[4].model)}\n`;
-        report += `Serial Num   : ${print(data[4].serial)}\n`;
+        report += `Type         : ${print(chassis.type)}\n`;
+        report += `Manufacturer : ${print(chassis.manufacturer)}\n`;
+        report += `Model        : ${print(chassis.model)}\n`;
+        report += `Serial Num   : ${print(chassis.serial)}\n`;
 
         // 5. OPERATING SYSTEM
         report += header('OPERATING SYSTEM');
-        report += `Platform     : ${print(data[5].platform)}\n`;
-        report += `Distro       : ${print(data[5].distro)}\n`;
-        report += `Release      : ${print(data[5].release)}\n`;
-        report += `Codename     : ${print(data[5].codename)}\n`;
-        report += `Kernel       : ${print(data[5].kernel)}\n`;
-        report += `Arch         : ${print(data[5].arch)}\n`;
-        report += `Hostname     : ${print(data[5].hostname)}\n`;
-        report += `UEFI         : ${data[5].uefi ? 'Yes' : 'No'}\n`;
+        report += `Platform     : ${print(osInfo.platform)}\n`;
+        report += `Distro       : ${print(osInfo.distro)}\n`;
+        report += `Release      : ${print(osInfo.release)}\n`;
+        report += `Codename     : ${print(osInfo.codename)}\n`;
+        report += `Kernel       : ${print(osInfo.kernel)}\n`;
+        report += `Arch         : ${print(osInfo.arch)}\n`;
+        report += `Hostname     : ${print(osInfo.hostname)}\n`;
+        report += `UEFI         : ${osInfo.uefi ? 'Yes' : 'No'}\n`;
 
         // 6. PROCESSOR (CPU)
         report += header('PROCESSOR (CPU)');
-        report += `Manufacturer : ${print(data[7].manufacturer)}\n`;
-        report += `Brand        : ${print(data[7].brand)}\n`;
-        report += `Socket       : ${print(data[7].socket)}\n`;
-        report += `Speed        : ${data[7].speed} GHz (Base) / ${data[7].speedMax} GHz (Max)\n`;
-        report += `Cores        : ${data[7].physicalCores} Physical / ${data[7].cores} Logical\n`;
-        report += `Governor     : ${print(data[7].governor)}\n`;
-        report += `Family/Model : ${data[7].family} / ${data[7].model}\n`;
-        report += `Virtualiz.   : ${data[7].virtualization ? 'Supported' : 'No'}\n`;
-        
+        report += `Manufacturer : ${print(cpu.manufacturer)}\n`;
+        report += `Brand        : ${print(cpu.brand)}\n`;
+        report += `Socket       : ${print(cpu.socket)}\n`;
+        report += `Speed        : ${print(cpu.speed)} GHz (Base) / ${print(cpu.speedMax)} GHz (Max)\n`;
+        report += `Cores        : ${print(cpu.physicalCores)} Physical / ${print(cpu.cores)} Logical\n`;
+        report += `Governor     : ${print(cpu.governor)}\n`;
+        report += `Family/Model : ${print(cpu.family)} / ${print(cpu.model)}\n`;
+        report += `Virtualiz.   : ${cpu.virtualization ? 'Supported' : 'No'}\n`;
+
         report += `\n--- CPU CACHE ---\n`;
-        report += `L1 Data      : ${formatBytes(data[8].l1d)}\n`;
-        report += `L1 Instruct  : ${formatBytes(data[8].l1i)}\n`;
-        report += `L2 Cache     : ${formatBytes(data[8].l2)}\n`;
-        report += `L3 Cache     : ${formatBytes(data[8].l3)}\n`;
+        report += `L1 Data      : ${formatBytes(cpuCache.l1d || 0)}\n`;
+        report += `L1 Instruct  : ${formatBytes(cpuCache.l1i || 0)}\n`;
+        report += `L2 Cache     : ${formatBytes(cpuCache.l2 || 0)}\n`;
+        report += `L3 Cache     : ${formatBytes(cpuCache.l3 || 0)}\n`;
 
         // 7. MEMORY (RAM)
         report += header('MEMORY (RAM) SUMMARY');
-        report += `Total Size   : ${formatBytes(data[9].total)}\n`;
-        report += `Available    : ${formatBytes(data[9].available)}\n`;
-        report += `Used         : ${formatBytes(data[9].used)}\n`;
-        
+        report += `Total Size   : ${formatBytes(mem.total)}\n`;
+        report += `Available    : ${formatBytes(mem.available)}\n`;
+        report += `Used         : ${formatBytes(mem.used)}\n`;
+
         report += `\n--- PHYSICAL MEMORY STICKS (DIMMS) ---\n`;
-        data[10].forEach((stick, i) => {
-            report += `[Stick #${i + 1}]\n`;
-            report += `  Size       : ${formatBytes(stick.size)}\n`;
-            report += `  Type       : ${print(stick.type)}\n`;
-            report += `  Clock Speed: ${print(stick.clockSpeed)} MHz\n`;
-            report += `  Manuf      : ${print(stick.manufacturer)}\n`;
-            report += `  Part Num   : ${print(stick.partNum)}\n`;
-            report += `  Voltage    : ${print(stick.voltageConfigured)}v\n`;
-        });
+        if (Array.isArray(memLayout) && memLayout.length) {
+            memLayout.forEach((stick, i) => {
+                report += `[Stick #${i + 1}]\n`;
+                report += `  Size       : ${formatBytes(stick.size)}\n`;
+                report += `  Type       : ${print(stick.type)}\n`;
+                report += `  Clock Speed: ${print(stick.clockSpeed)} MHz\n`;
+                report += `  Manuf      : ${print(stick.manufacturer)}\n`;
+                report += `  Part Num   : ${print(stick.partNum)}\n`;
+                report += `  Voltage    : ${print(stick.voltageConfigured)}v\n`;
+            });
+        } else {
+            report += 'No DIMM details available.\n';
+        }
 
         // 8. GRAPHICS (GPU & DISPLAYS)
         report += header('GRAPHICS CONTROLLERS (GPU)');
-        data[11].controllers.forEach((gpu, i) => {
-            report += `[GPU #${i + 1}]\n`;
-            report += `  Model      : ${print(gpu.model)}\n`;
-            report += `  Vendor     : ${print(gpu.vendor)}\n`;
-            report += `  VRAM       : ${gpu.vram ? formatBytes(gpu.vram * 1024 * 1024) : 'Shared/Dynamic'}\n`;
-            report += `  Bus        : ${print(gpu.bus)}\n`;
-            report += `  Driver     : ${print(gpu.driverVersion)}\n`;
-        });
+        if (graphics && Array.isArray(graphics.controllers)) {
+            graphics.controllers.forEach((gpu, i) => {
+                report += `[GPU #${i + 1}]\n`;
+                report += `  Model      : ${print(gpu.model)}\n`;
+                report += `  Vendor     : ${print(gpu.vendor)}\n`;
+                report += `  VRAM       : ${gpu.vram ? formatBytes(gpu.vram * 1024 * 1024) : 'Shared/Dynamic'}\n`;
+                report += `  Bus        : ${print(gpu.bus)}\n`;
+                report += `  Driver     : ${print(gpu.driverVersion)}\n`;
+            });
+        }
 
         report += `\n--- DISPLAYS (MONITORS) ---\n`;
-        data[11].displays.forEach((disp, i) => {
-            report += `[Display #${i + 1}]\n`;
-            report += `  Model      : ${print(disp.model)}\n`;
-            report += `  Resolution : ${disp.resolutionX} x ${disp.resolutionY}\n`;
-            report += `  Refresh    : ${print(disp.currentRefreshRate)} Hz\n`;
-            report += `  Connection : ${print(disp.connection)}\n`;
-            report += `  Main       : ${disp.main ? 'Yes (Primary)' : 'No'}\n`;
-        });
+        if (graphics && Array.isArray(graphics.displays)) {
+            graphics.displays.forEach((disp, i) => {
+                report += `[Display #${i + 1}]\n`;
+                report += `  Model      : ${print(disp.model)}\n`;
+                report += `  Resolution : ${disp.resolutionX || 'N/A'} x ${disp.resolutionY || 'N/A'}\n`;
+                report += `  Refresh    : ${print(disp.currentRefreshRate)} Hz\n`;
+                report += `  Connection : ${print(disp.connection)}\n`;
+                report += `  Main       : ${disp.main ? 'Yes (Primary)' : 'No'}\n`;
+            });
+        }
 
         // 9. STORAGE DEVICES
         report += header('PHYSICAL STORAGE (DISKS)');
-        data[12].forEach((disk, i) => {
-            report += `[Disk #${i + 1}] -> ${print(disk.name)}\n`;
-            report += `  Type       : ${print(disk.type)} (${print(disk.interfaceType)})\n`;
-            report += `  Size       : ${formatBytes(disk.size)}\n`;
-            report += `  Vendor     : ${print(disk.vendor)}\n`;
-            report += `  Firmware   : ${print(disk.firmwareRevision)}\n`;
-            report += `  Serial     : ${print(disk.serialNum)}\n`; // Warning: Usually hidden by OS permissions
-        });
+        if (Array.isArray(diskLayout) && diskLayout.length) {
+            diskLayout.forEach((disk, i) => {
+                report += `[Disk #${i + 1}] -> ${print(disk.name)}\n`;
+                report += `  Type       : ${print(disk.type)} (${print(disk.interfaceType)})\n`;
+                report += `  Size       : ${formatBytes(disk.size)}\n`;
+                report += `  Vendor     : ${print(disk.vendor)}\n`;
+                report += `  Firmware   : ${print(disk.firmwareRevision)}\n`;
+                report += `  Serial     : ${print(disk.serialNum)}\n`;
+            });
+        }
 
         // 10. FILE SYSTEMS (VOLUMES)
         report += header('LOGICAL VOLUMES (DRIVES)');
-        data[13].forEach((fs, i) => {
-            report += `[Volume: ${print(fs.fs)}]\n`;
-            report += `  Mount Point: ${print(fs.mount)}\n`;
-            report += `  Type       : ${print(fs.type)}\n`;
-            report += `  Size       : ${formatBytes(fs.size)}\n`;
-            report += `  Used       : ${formatBytes(fs.used)} (${fs.use}%)\n`;
-        });
+        if (Array.isArray(fsSize) && fsSize.length) {
+            fsSize.forEach((fs, i) => {
+                report += `[Volume: ${print(fs.fs)}]\n`;
+                report += `  Mount Point: ${print(fs.mount)}\n`;
+                report += `  Type       : ${print(fs.type)}\n`;
+                report += `  Size       : ${formatBytes(fs.size)}\n`;
+                report += `  Used       : ${formatBytes(fs.used)} (${fs.use || 'N/A'}%)\n`;
+            });
+        }
 
         // 11. NETWORK
         report += header('NETWORK INTERFACES');
-        data[14].forEach((net, i) => {
-            report += `[Interface: ${print(net.iface)}]\n`;
-            report += `  Name       : ${print(net.ifaceName)}\n`;
-            report += `  Model      : ${print(net.model)}\n`;
-            report += `  Type       : ${print(net.type)}\n`;
-            report += `  MAC Addr   : ${print(net.mac)}\n`;
-            report += `  IPv4       : ${print(net.ip4)}\n`;
-            report += `  IPv4 Mask  : ${print(net.ip4subnet)}\n`;
-            report += `  State      : ${print(net.operstate)}\n`;
-            report += `  Speed      : ${net.speed ? net.speed + ' Mbit/s' : 'N/A'}\n`;
-            report += `-----------------\n`;
-        });
+        if (Array.isArray(networkInterfaces) && networkInterfaces.length) {
+            networkInterfaces.forEach((net, i) => {
+                report += `[Interface: ${print(net.iface)}]\n`;
+                report += `  Name       : ${print(net.ifaceName)}\n`;
+                report += `  Model      : ${print(net.model)}\n`;
+                report += `  Type       : ${print(net.type)}\n`;
+                report += `  MAC Addr   : ${print(net.mac)}\n`;
+                report += `  IPv4       : ${print(net.ip4)}\n`;
+                report += `  IPv4 Mask  : ${print(net.ip4subnet)}\n`;
+                report += `  State      : ${print(net.operstate)}\n`;
+                report += `  Speed      : ${net.speed ? net.speed + ' Mbit/s' : 'N/A'}\n`;
+                report += `-----------------\n`;
+            });
+        }
 
         // 12. AUDIO
         report += header('AUDIO DEVICES');
-        data[15].forEach((audio, i) => {
-            report += `[Device #${i + 1}]\n`;
-            report += `  Name       : ${print(audio.name)}\n`;
-            report += `  Manuf      : ${print(audio.manufacturer)}\n`;
-            report += `  Status     : ${print(audio.status)}\n`;
-        });
+        if (Array.isArray(audio) && audio.length) {
+            audio.forEach((a, i) => {
+                report += `[Device #${i + 1}]\n`;
+                report += `  Name       : ${print(a.name)}\n`;
+                report += `  Manuf      : ${print(a.manufacturer)}\n`;
+                report += `  Status     : ${print(a.status)}\n`;
+            });
+        }
 
         // 13. USB DEVICES
         report += header('USB DEVICES');
-        data[16].forEach((usb, i) => {
-            report += `[USB #${i + 1}]\n`;
-            report += `  Name       : ${print(usb.name)}\n`;
-            report += `  Type       : ${print(usb.type)}\n`;
-            report += `  Manuf      : ${print(usb.manufacturer)}\n`;
-            report += `  Vendor     : ${print(usb.vendor)}\n`;
-        });
+        if (Array.isArray(usb) && usb.length) {
+            usb.forEach((u, i) => {
+                report += `[USB #${i + 1}]\n`;
+                report += `  Name       : ${print(u.name)}\n`;
+                report += `  Type       : ${print(u.type)}\n`;
+                report += `  Manuf      : ${print(u.manufacturer)}\n`;
+                report += `  Vendor     : ${print(u.vendor)}\n`;
+            });
+        }
 
         // 14. BLUETOOTH
         report += header('BLUETOOTH');
-        if (data[17].length === 0) {
-            report += "No connected Bluetooth devices found.\n";
-        } else {
-            data[17].forEach((bt, i) => {
+        if (Array.isArray(bluetoothDevices) && bluetoothDevices.length) {
+            bluetoothDevices.forEach((bt, i) => {
                 report += `[Device #${i + 1}]\n`;
                 report += `  Name       : ${print(bt.name)}\n`;
                 report += `  MAC        : ${print(bt.macDevice)}\n`;
                 report += `  Connected  : ${bt.connected ? 'Yes' : 'No'}\n`;
             });
+        } else {
+            report += "No connected Bluetooth devices found.\n";
+        }
+
+        // 15. POWER & BATTERY (New Section)
+        report += header('POWER & BATTERY');
+        if (battery && battery.hasBattery) {
+            report += `Has Battery     : Yes\n`;
+            report += `Battery Model   : ${print(battery.model)}\n`;
+            report += `Manufacturer    : ${print(battery.manufacturer)}\n`;
+            report += `Type            : ${print(battery.type)}\n`;
+            report += `Designed Cap    : ${print(battery.designedCapacity)}\n`;
+            report += `Max Capacity    : ${print(battery.maxCapacity)}\n`;
+            report += `Current Charge  : ${print(battery.percent)}%\n`;
+            report += `Cycle Count     : ${print(battery.cycleCount)}\n`;
+            report += `Charging        : ${battery.isCharging ? 'Yes' : 'No'}\n`;
+
+            // Calculate wear if both values are available
+            if (battery.designedCapacity && battery.maxCapacity) {
+                const wear = ((battery.designedCapacity - battery.maxCapacity) / battery.designedCapacity) * 100;
+                report += `Health/Wear     : ${wear.toFixed(2)}% (approx)\n`;
+            } else {
+                report += `Health/Wear     : N/A\n`;
+            }
+        } else {
+            report += `Has Battery     : No\n`;
+            report += `Power Source    : AC Adapter (Desktop Mode)\n`;
+            report += `Note            : Standard Desktop PSUs do not usually report data to the OS.\n`;
         }
 
         // OUTPUT TO FILE
@@ -258,8 +280,7 @@ generateDeepDiveReport();
         const filePath = path.join(__dirname, fileName);
         fs.writeFileSync(filePath, report);
 
-        console.log(`\n✅ DONE!`);
-        console.log(`Detailed report saved to: ${fileName}`);
+        console.log(`\n✅ DONE! Detailed report saved to: ${fileName}`);
 
     } catch (e) {
         console.error("Error generating report:", e);
@@ -267,4 +288,3 @@ generateDeepDiveReport();
 }
 
 generateDeepDiveReport();
-
