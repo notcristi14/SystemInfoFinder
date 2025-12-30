@@ -109,9 +109,9 @@ Available    : 16.40 GB
   Type       : HID
 ...
 
-============================================================
+------------------------------------------------------------
 [ POWER SUPPLY & DELIVERY ]
-============================================================
+------------------------------------------------------------
 Device Type     : Battery Powered (Laptop)
 Battery Model   : standard_battery
 Manufacturer    : DELL
@@ -126,6 +126,6 @@ Device Type     : Desktop (AC Powered)
 Power Source    : Wall Outlet / UPS
 Current CPU Load: 12.45%
 
-Note: Standard Desktop PSUs do not have a data link to the 
+## ⚠️ Note: Standard Desktop PSUs do not have a data link to the 
 motherboard. For Desktop PSU wattage (e.g., 750W), please 
 refer to the physical sticker on the power supply unit.
