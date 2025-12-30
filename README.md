@@ -46,17 +46,17 @@ A file named `full_pc_report.txt` will be generated in the same directory.
 FULL SYSTEM DIAGNOSTIC REPORT
 Generated on: 12/17/2025, 10:45:00 AM
 Uptime      : 4.50 Hours
-============================================================
+------------------------------------------------------------
 [ SYSTEM HARDWARE ]
-============================================================
+------------------------------------------------------------
 Manufacturer : Dell Inc.
 Model        : XPS 8940
 Serial Num   : 8J9K...
 ...
 
-============================================================
+------------------------------------------------------------
 [ BIOS / FIRMWARE ]
-============================================================
+------------------------------------------------------------
 Vendor       : Dell Inc.
 Version      : 2.13.0
 Release Date : 2023-11-15
@@ -120,7 +120,7 @@ Is Charging     : No
 Current Voltage : 12.4V
 Health/Wear     : 8% Wear Level (92% Health)
 
---- OR (For Desktops) ---
+------------------------------------------------------------ OR (For Desktops) ------------------------------------------------------------
 
 Device Type     : Desktop (AC Powered)
 Power Source    : Wall Outlet / UPS
