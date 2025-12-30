@@ -18,7 +18,7 @@ Generates a `full_pc_report.txt` containing detailed metrics across **14+ catego
 * **🔌 Peripherals:** Connected **USB devices** (Mice, Keyboards) and **Audio** inputs/outputs.
 * **🖧 Network:** Active Interfaces, MAC Addresses, IP, and Link Speeds.
 * **📂 Storage:** Physical Disk specs (Model, Firmware) and Logical Volume usage (C: drive usage %).
-* **​⚡ Power:** Battery health, cycle counts (for laptops), and AC power status.
+* **​⚡ Power:** Real-time charge percentage, charging status (AC/DC), battery health/wear levels, cycle counts, and hardware model info.
 -----------------------------------
 
 ## 🚀 Setup & Installation
@@ -108,3 +108,24 @@ Available    : 16.40 GB
   Name       : Razer DeathAdder V2
   Type       : HID
 ...
+
+============================================================
+[ POWER SUPPLY & DELIVERY ]
+============================================================
+Device Type     : Battery Powered (Laptop)
+Battery Model   : standard_battery
+Manufacturer    : DELL
+Charge Level    : 92%
+Is Charging     : No
+Current Voltage : 12.4V
+Health/Wear     : 8% Wear Level (92% Health)
+
+--- OR (For Desktops) ---
+
+Device Type     : Desktop (AC Powered)
+Power Source    : Wall Outlet / UPS
+Current CPU Load: 12.45%
+
+Note: Standard Desktop PSUs do not have a data link to the 
+motherboard. For Desktop PSU wattage (e.g., 750W), please 
+refer to the physical sticker on the power supply unit.
